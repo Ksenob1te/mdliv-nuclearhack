@@ -6,9 +6,6 @@ from api_server.database.schema import Base
 from app.params import (DB_HOST, DB_NAME, DB_PORT, DB_TYPE, DB_USER_LOGIN,
                         DB_USER_PASSWORD)
 
-from typing import Annotated
-from fastapi import Depends
-
 connect_string = ""
 
 if DB_TYPE == "mysql":
@@ -17,7 +14,7 @@ else:
     connect_string = f"sqlite+aiosqlite:///./{DB_NAME}.db"
 
 
-engine = create_async_engine(connect_string, echo=True, connect_args={
+engine = create_async_engine(connect_string, echo=False, connect_args={
                              "check_same_thread": False})
 async_session_maker = sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False)

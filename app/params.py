@@ -11,8 +11,8 @@ DB_TYPE = os.environ.get("DATABASE_TYPE", "sqlite")
 DB_USER_LOGIN = os.environ.get("DATABASE_USERNAME", "root")
 DB_USER_PASSWORD = os.environ.get("DATABASE_PASSWORD", "root")
 
-API_IP = os.environ.get("MAIN_API_IP", "localhost")
 API_PORT = int(os.environ.get("MAIN_API_PORT", "8080"))
+NEURO_PORT = int(os.environ.get("NEURO_API_PORT", "8080"))
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", None)
 BOT_SERVER_PORT = int(os.environ.get("BOT_SERVER_PORT", "8081"))
@@ -36,4 +36,5 @@ logging.basicConfig(
 DEBUG = bool(os.environ.get("DEBUG", "False"))
 PUBLIC_BOT_URL = os.environ.get("PUBLIC_BOT_URL", "localhost:8081")
 PUBLIC_SERVER_URL = os.environ.get("PUBLIC_SERVER_URL", "localhost:8080")
+PUBLIC_NEURO_URL = os.environ.get("PUBLIC_NEURO_URL", "localhost:8082")
 

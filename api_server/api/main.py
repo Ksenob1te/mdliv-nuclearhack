@@ -10,7 +10,8 @@ from typing import Any
 import api_server.database.crud as crud
 import api_server.endpoints as endpoints
 
-from app.params import API_IP, API_PORT
+
+from app.params import PUBLIC_SERVER_URL, API_PORT, PUBLIC_NEURO_URL
 
 router = APIRouter()
 
@@ -49,7 +50,7 @@ async def send(req: SendRequest, session: AsyncSession = Depends(get_async_sessi
 
     await session.commit()
     
-    endpoints.send_to_neuro("", "", req.text, neuro_ray_id)
+    endpoints.send_to_neuro(f"http://{PUBLIC_NEURO_URL}/process", f"http://{PUBLIC_SERVER_URL}/neuro/hook/preprocess", req.text, neuro_ray_id)
 
     return SendResponse(ray_id=user_ray_id)
 
@@ -61,8 +62,10 @@ async def neuro_hook_preprocess(req: NeuroAnswer, session: AsyncSession = Depend
         raise HTTPException(400)
     if log_inst.response is not None:
         raise HTTPException(400)
-
-    endpoints.send_to_neuro()
+    
+    
+    
+    endpoints.send_to_neuro(f"http://{PUBLIC_NEURO_URL}/process", f"http://{PUBLIC_SERVER_URL}/neuro/hook/process", req.text, log_inst.neuro_ray_id)
     
     return JSONResponse({"msg": "ok"})
 
