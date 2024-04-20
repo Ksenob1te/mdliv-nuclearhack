@@ -37,7 +37,7 @@ class NeuroAnswer(BaseModel):
 
 
 BASE_PROMPT_PREPROCESSOR = "Ответь на следующий вопрос в формате json выделив название станции в ключ station, а дату, указанную в сообщение в ключ date, преобразуя дату в европейский формат времени"
-BASE_PROMPT_PROCESSOR = "Зная, что в дату Saturday, April 20, 2024 на станции Отрадное пассажиропоток был 12432 ответь на вопрос:"
+BASE_PROMPT_PROCESSOR = "Зная, что в дату {} на станции {} пассажиропоток был {} ответь на вопрос:"
 
 
 @router.post("/send")
@@ -47,7 +47,9 @@ async def send(req: SendRequest, session: AsyncSession = Depends(get_async_sessi
 
     log_inst = await crud.make_log(session, req.text, user_ray_id, neuro_ray_id, req.webhook_url)
 
-    endpoints.send_to_neuro()
+    await session.commit()
+    
+    endpoints.send_to_neuro("", "", req.text, neuro_ray_id)
 
     return SendResponse(ray_id=user_ray_id)
 

@@ -50,7 +50,6 @@ class FlowData(Base):
     
     metro_station_id: Mapped[int] = mapped_column(ForeignKey("metro_station.id"))
     
-    
     metro_station: Mapped[MetroStation] = relationship()
     
     

@@ -7,9 +7,6 @@ async def make_log(session: AsyncSession, text: str, user_ray_id: str, neuro_ray
     log = History(request=text, user_ray_id=user_ray_id,
                   neuro_ray_id=neuro_ray_id, webhook=webhook)
     session.add_all([log])
-
-    await session.commit()
-
     return log
 
 
@@ -22,14 +19,12 @@ async def get_log_by_neuro_ray_id(session: AsyncSession, neuro_ray_id: str) -> H
 async def create_metro_station(session: AsyncSession, name: str, line_id: str):
     station = MetroStation(name=name, line_id=line_id)
     session.add_all([station])
-    await session.commit()
     return station
 
 
 async def create_metro_line(session: AsyncSession, name: str, line_number: int):
     station = MetroLine(name=name, line_number=line_number)
     session.add_all([station])
-    await session.commit()
     return station
 
 
@@ -54,5 +49,9 @@ async def get_metro_station_by_id(session: AsyncSession, id: int) -> MetroStatio
 async def create_flow_record(session: AsyncSession, station_id: int, timestamp: datetime, count: int) -> FlowData:
     station = FlowData(metro_station_id=station_id, timestamp=timestamp, count=count)
     session.add_all([station])
-    await session.commit()
     return station
+
+async def get_flow_record(session: AsyncSession, station_id: int, timestamp: datetime) -> FlowData:
+    stmt = select(FlowData).where(FlowData.metro_station_id == station_id).where(FlowData.timestamp == timestamp)
+    res = await session.scalar(stmt)
+    return res
