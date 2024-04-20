@@ -15,7 +15,14 @@ API_IP = os.environ.get("MAIN_API_IP", "localhost")
 API_PORT = int(os.environ.get("MAIN_API_PORT", "8080"))
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", None)
-BOT_PORT = int(os.environ.get("BOT_PORT", "8081"))
+BOT_SERVER_PORT = int(os.environ.get("BOT_SERVER_PORT", "8081"))
+
+BOT_DB_HOST = os.environ.get("BOT_DB_HOST", "localhost")
+BOT_DB_NAME = os.environ.get("BOT_DB_TABLE", "bot_base")
+BOT_DB_PORT = int(os.environ.get("BOT_DB_PORT", "3306"))
+BOT_DB_TYPE = os.environ.get("BOT_DB_TYPE", "sqlite")
+BOT_DB_USER_LOGIN = os.environ.get("BOT_DB_USERNAME", "root")
+BOT_DB_USER_PASSWORD = os.environ.get("BOT_DB_PASSWORD", "root")
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 logging.basicConfig(
