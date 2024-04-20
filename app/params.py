@@ -12,7 +12,7 @@ DB_USER_LOGIN = os.environ.get("DATABASE_USERNAME", "root")
 DB_USER_PASSWORD = os.environ.get("DATABASE_PASSWORD", "root")
 
 API_PORT = int(os.environ.get("MAIN_API_PORT", "8080"))
-NEURO_PORT = int(os.environ.get("NEURO_API_PORT", "8080"))
+NEURO_PORT = int(os.environ.get("NEURO_API_PORT", "8082"))
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", None)
 BOT_SERVER_PORT = int(os.environ.get("BOT_SERVER_PORT", "8081"))
@@ -33,7 +33,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-DEBUG = bool(os.environ.get("DEBUG", "False"))
+DEBUG = os.environ.get("DEBUG", "False") == "TRUE"
 PUBLIC_BOT_URL = os.environ.get("PUBLIC_BOT_URL", "localhost:8081")
 PUBLIC_SERVER_URL = os.environ.get("PUBLIC_SERVER_URL", "localhost:8080")
 PUBLIC_NEURO_URL = os.environ.get("PUBLIC_NEURO_URL", "localhost:8082")
