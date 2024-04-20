@@ -15,6 +15,7 @@ API_IP = os.environ.get("MAIN_API_IP", "localhost")
 API_PORT = int(os.environ.get("MAIN_API_PORT", "8080"))
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", None)
+BOT_PORT = int(os.environ.get("BOT_PORT", "8081"))
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 logging.basicConfig(
