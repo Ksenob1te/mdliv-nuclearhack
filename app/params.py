@@ -17,8 +17,9 @@ API_PORT = int(os.environ.get("MAIN_API_PORT", "8080"))
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", None)
 
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 logging.basicConfig(
-    filename="log.txt",
+    filename=os.path.join(ROOT_DIR, "log.txt"),
     filemode='a',
     format='%(asctime)s,%(msecs)d - %(name)s - %(levelname)s: %(message)s',
     datefmt='%H:%M:%S',
