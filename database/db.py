@@ -6,6 +6,9 @@ from database.schema import Base
 from app.params import (DB_HOST, DB_NAME, DB_PORT, DB_TYPE, DB_USER_LOGIN,
                         DB_USER_PASSWORD)
 
+from typing import Annotated
+from fastapi import Depends
+
 connect_string = ""
 
 if DB_TYPE == "mysql":
@@ -28,3 +31,6 @@ async def create_db_and_tables():
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
         yield session
+        
+        
+AsyncSession = Annotated[async_session_maker, Depends(get_async_session)]
