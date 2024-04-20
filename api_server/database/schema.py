@@ -32,6 +32,8 @@ class History(Base):
     request: Mapped[str]
     response: Mapped[str] = mapped_column(nullable=True)
     
+    webhook: Mapped[str]
+    
     user_ray_id: Mapped[str]
     neuro_ray_id: Mapped[str]
     

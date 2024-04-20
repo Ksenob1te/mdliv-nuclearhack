@@ -1,7 +1,7 @@
 import requests
 
-def send_to_neuro(prompt: str, ray_id: str, mode: str):
+def send_to_neuro(url: str, webhook: str, prompt: str, ray_id: str):
     pass
 
-def send_to_telegram(response: str, ray_id: str):
+def send_to_telegram(url: str, response: str, ray_id: str):
     pass

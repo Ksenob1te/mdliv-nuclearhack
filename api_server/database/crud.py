@@ -3,9 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 
-async def make_log(session: AsyncSession, text: str, user_ray_id: str, neuro_ray_id: str) -> History:
+async def make_log(session: AsyncSession, text: str, user_ray_id: str, neuro_ray_id: str, webhook: str) -> History:
     log = History(request=text, user_ray_id=user_ray_id,
-                  neuro_ray_id=neuro_ray_id)
+                  neuro_ray_id=neuro_ray_id, webhook=webhook)
     session.add_all([log])
 
     await session.commit()
