@@ -40,7 +40,7 @@ class NeuroAnswer(BaseModel):
 BASE_PROMPT_PREPROCESSOR = "Answer the following question in json format by highlighting the station name in the station key, and the date specified in the message in the date key, converting the date to the time format like YYYY-MM-DD"
 BASE_PROMPT_PROCESSOR = ""
 SYSTEM_PREPROCESSOR = "Today is April 3, 2024. You print only json."
-SYSTEM_PROCESSOR = "Today is April 3, 2024. On the day of {}, there were {} people at {} station. Answer only in Russian. Отвечай на русском."
+SYSTEM_PROCESSOR = "Today is April 3, 2024. В день {}, было {} людей на станции {} station. Answer only in Russian. Отвечай на русском."
 
 @router.post("/send")
 async def send(req: SendRequest, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_async_session)) -> SendResponse:

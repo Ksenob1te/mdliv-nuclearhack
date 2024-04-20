@@ -13,7 +13,9 @@ app = FastAPI()
 
 llm = Llama(
     model_path="codellama-7b-instruct.Q4_K_S.gguf",
-    use_mlock=True
+    use_mlock=True,
+    n_threads=10,
+    n_ctx=1024
 )
 
 
