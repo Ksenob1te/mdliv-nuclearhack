@@ -16,7 +16,7 @@ if BOT_DB_TYPE == "mysql":
 else:
     connect_string = f"sqlite+aiosqlite:///./{BOT_DB_NAME}.db"
 
-engine = create_async_engine(connect_string, echo=True, connect_args={
+engine = create_async_engine(connect_string, echo=False, connect_args={
     "check_same_thread": False})
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 

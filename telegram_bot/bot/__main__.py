@@ -1,5 +1,10 @@
 from telegram_bot.bot.bot import bot
 
-if __name__ == "__main__":
+
+def run():
     import asyncio
     asyncio.run(bot.polling(non_stop=True))
+
+
+if __name__ == "__main__":
+    run()

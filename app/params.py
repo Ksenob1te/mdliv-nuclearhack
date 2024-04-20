@@ -32,7 +32,6 @@ logging.basicConfig(
     datefmt='%H:%M:%S',
     level=logging.INFO
 )
-
 DEBUG = os.environ.get("DEBUG", "False") == "TRUE"
 PUBLIC_BOT_URL = os.environ.get("PUBLIC_BOT_URL", "localhost:8081")
 PUBLIC_SERVER_URL = os.environ.get("PUBLIC_SERVER_URL", "localhost:8080")

@@ -5,6 +5,7 @@ import pandas as pd
 
 import asyncio
 
+
 async def main():
     await create_db_and_tables()
     async with async_session_maker() as session:
@@ -13,7 +14,7 @@ async def main():
 
         df = pd.read_csv('stations.csv')
         df.rename(columns={'Станция': 'station_name', 'Номер линии': 'line_num', 'Дата': 'line_name'}, inplace=True)
-        #сортируем по (станция, линия), чтобы убрать дубли
+        # сортируем по (станция, линия), чтобы убрать дубли
         df = df.sort_values(by=['station_name', 'line_num', '4/3/2024'], ascending=False)
         df = df.groupby(['station_name', 'line_name'], as_index=False).first()
 
