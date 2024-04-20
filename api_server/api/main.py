@@ -10,7 +10,7 @@ from typing import Any
 import api_server.database.crud as crud
 import api_server.endpoints as endpoints
 import json
-
+from datetime import datetime
 from app.params import PUBLIC_SERVER_URL, API_PORT, PUBLIC_NEURO_URL
 
 router = APIRouter()
@@ -37,10 +37,10 @@ class NeuroAnswer(BaseModel):
     result: str
 
 
-BASE_PROMPT_PREPROCESSOR = "Сегодня 3 апреля 2024 года. Ответь на следующий вопрос в формате json выделив название станции в ключ station, а дату, указанную в сообщение в ключ date, преобразуя дату в европейский формат времени"
-BASE_PROMPT_PROCESSOR = "Сегодня 3 апреля 2024 года. Зная, что в дату {} на станции {} пассажиропоток был {} ответь на вопрос, не повторяя его."
-SYSTEM_PREPROCESSOR = ""
-SYSTEM_PROCESSOR = ""
+BASE_PROMPT_PREPROCESSOR = "Answer the following question in json format by highlighting the station name in the station key, and the date specified in the message in the date key, converting the date to the time format like YYYY-MM-DD"
+BASE_PROMPT_PROCESSOR = ""
+SYSTEM_PREPROCESSOR = "Today is April 3, 2024. You print only json."
+SYSTEM_PROCESSOR = "Today is April 3, 2024. On the day of {}, there were {} people at {} station. Answer only in Russian. Отвечай на русском."
 
 @router.post("/send")
 async def send(req: SendRequest, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_async_session)) -> SendResponse:
@@ -67,8 +67,12 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
     
     try:
         data = json.loads(req.result.strip())
+        date = datetime.fromisoformat(data["date"]).strftime("YYYY-MM-DD")
+        station = data["station"]
     except:
         data = None
+        
+    print(data)
     
     if data is None:
         background_tasks.add_task(
@@ -76,14 +80,11 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
         )
         return JSONResponse({"msg": "ok"})
     
-    prompt = BASE_PROMPT_PROCESSOR.format( data["date"], data["station"], 1231 )
-    background_tasks.add_task(
-        endpoints.send_to_telegram, log_inst.webhook, req.result, log_inst.user_ray_id, SYSTEM_PROCESSOR
-    )
+    prompt = BASE_PROMPT_PROCESSOR
     
     background_tasks.add_task(
         endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/process", f"http://{PUBLIC_SERVER_URL}/api/neuro/hook/process",
-        prompt + "\n" + req.result, log_inst.neuro_ray_id
+        prompt + "\n" + req.result, log_inst.neuro_ray_id, SYSTEM_PROCESSOR.format(date, 1231, station)
     )
     return JSONResponse({"msg": "ok"})
 
