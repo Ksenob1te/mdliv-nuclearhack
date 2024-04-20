@@ -12,7 +12,6 @@ DB_USER_LOGIN = os.environ.get("DATABASE_USERNAME", "root")
 DB_USER_PASSWORD = os.environ.get("DATABASE_PASSWORD", "root")
 
 API_IP = os.environ.get("MAIN_API_IP", "localhost")
-API_PORT = os.environ.get("MAIN_API_PORT", "8080")
 API_PORT = int(os.environ.get("MAIN_API_PORT", "8080"))
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", None)
