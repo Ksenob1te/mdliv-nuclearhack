@@ -2,7 +2,7 @@ from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from api_server.database.schema import Base
+from telegram_bot.database.schema import Base
 from app.params import (BOT_DB_HOST, BOT_DB_USER_LOGIN, BOT_DB_USER_PASSWORD,
                         BOT_DB_PORT, BOT_DB_NAME, BOT_DB_TYPE)
 
