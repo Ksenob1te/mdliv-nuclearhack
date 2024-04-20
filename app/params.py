@@ -34,3 +34,6 @@ logging.basicConfig(
 )
 
 DEBUG = bool(os.environ.get("DEBUG", "False"))
+PUBLIC_BOT_URL = os.environ.get("PUBLIC_BOT_URL", "localhost:8081")
+PUBLIC_SERVER_URL = os.environ.get("PUBLIC_SERVER_URL", "localhost:8080")
+
