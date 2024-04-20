@@ -42,8 +42,10 @@ BASE_PROMPT_PROCESSOR = ""
 SYSTEM_PREPROCESSOR = "Today is April 3, 2024. You print only json."
 SYSTEM_PROCESSOR = "Today is April 3, 2024. В день {}, было {} людей на станции {} station. Answer only in Russian. Отвечай на русском."
 
+
 @router.post("/send")
-async def send(req: SendRequest, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_async_session)) -> SendResponse:
+async def send(req: SendRequest, background_tasks: BackgroundTasks,
+               session: AsyncSession = Depends(get_async_session)) -> SendResponse:
     user_ray_id = uuid.uuid4().hex
     neuro_ray_id = uuid.uuid4().hex
 
@@ -51,46 +53,51 @@ async def send(req: SendRequest, background_tasks: BackgroundTasks, session: Asy
 
     await session.commit()
     background_tasks.add_task(
-        endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/process", f"http://{PUBLIC_SERVER_URL}/api/neuro/hook/preprocess",
+        endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/process",
+        f"http://{PUBLIC_SERVER_URL}/api/neuro/hook/preprocess",
         BASE_PROMPT_PREPROCESSOR + "\n" + req.text, neuro_ray_id, SYSTEM_PREPROCESSOR
     )
     return SendResponse(ray_id=user_ray_id)
 
 
 @router.post("/neuro/hook/preprocess")
-async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_async_session)) -> JSONResponse:
+async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTasks,
+                                session: AsyncSession = Depends(get_async_session)) -> JSONResponse:
     log_inst = await crud.get_log_by_neuro_ray_id(session, req.ray_id)
     if log_inst is None:
         raise HTTPException(400)
     if log_inst.response is not None:
         raise HTTPException(400)
-    
+
     try:
         data = json.loads(req.result.strip())
         date = datetime.fromisoformat(data["date"]).strftime("YYYY-MM-DD")
         station = data["station"]
     except:
         data = None
-        
+
     print(data)
-    
+
     if data is None:
         background_tasks.add_task(
-            endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз", log_inst.user_ray_id
+            endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз",
+            log_inst.user_ray_id
         )
         return JSONResponse({"msg": "ok"})
-    
+
     prompt = BASE_PROMPT_PROCESSOR
-    
+
     background_tasks.add_task(
-        endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/process", f"http://{PUBLIC_SERVER_URL}/api/neuro/hook/process",
+        endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/process",
+        f"http://{PUBLIC_SERVER_URL}/api/neuro/hook/process",
         prompt + "\n" + req.result, log_inst.neuro_ray_id, SYSTEM_PROCESSOR.format(date, 1231, station)
     )
     return JSONResponse({"msg": "ok"})
 
 
 @router.post("/neuro/hook/process")
-async def neuro_hook_process(req: NeuroAnswer, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_async_session)) -> JSONResponse:
+async def neuro_hook_process(req: NeuroAnswer, background_tasks: BackgroundTasks,
+                             session: AsyncSession = Depends(get_async_session)) -> JSONResponse:
     log_inst = await crud.get_log_by_neuro_ray_id(session, req.ray_id)
     if log_inst is None:
         raise HTTPException(400)
