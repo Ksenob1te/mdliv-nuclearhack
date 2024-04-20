@@ -39,7 +39,8 @@ class NeuroAnswer(BaseModel):
 
 BASE_PROMPT_PREPROCESSOR = "Сегодня 3 апреля 2024 года. Ответь на следующий вопрос в формате json выделив название станции в ключ station, а дату, указанную в сообщение в ключ date, преобразуя дату в европейский формат времени"
 BASE_PROMPT_PROCESSOR = "Сегодня 3 апреля 2024 года. Зная, что в дату {} на станции {} пассажиропоток был {} ответь на вопрос, не повторяя его."
-
+SYSTEM_PREPROCESSOR = ""
+SYSTEM_PROCESSOR = ""
 
 @router.post("/send")
 async def send(req: SendRequest, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_async_session)) -> SendResponse:
@@ -51,7 +52,7 @@ async def send(req: SendRequest, background_tasks: BackgroundTasks, session: Asy
     await session.commit()
     background_tasks.add_task(
         endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/process", f"http://{PUBLIC_SERVER_URL}/api/neuro/hook/preprocess",
-        BASE_PROMPT_PREPROCESSOR + "\n" + req.text, neuro_ray_id
+        BASE_PROMPT_PREPROCESSOR + "\n" + req.text, neuro_ray_id, SYSTEM_PREPROCESSOR
     )
     return SendResponse(ray_id=user_ray_id)
 
@@ -77,7 +78,7 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
     
     prompt = BASE_PROMPT_PROCESSOR.format( data["date"], data["station"], 1231 )
     background_tasks.add_task(
-        endpoints.send_to_telegram, log_inst.webhook, req.result, log_inst.user_ray_id
+        endpoints.send_to_telegram, log_inst.webhook, req.result, log_inst.user_ray_id, SYSTEM_PROCESSOR
     )
     
     background_tasks.add_task(

@@ -21,6 +21,7 @@ class NeuroRequest(BaseModel):
     webhook: str
     content: str
     ray_id: str
+    system: str
 
 
 class NeuroAnswer(BaseModel):
@@ -33,7 +34,7 @@ async def process_prompt(req: NeuroRequest):
     llm_response = llm.create_chat_completion(
         messages=[
             {"role": "system",
-                "content": "Ты отлично классифицируешь сообщения по категориям."},
+                "content": req.system},
             {
                 "role": "user",
                 "content": req.content
