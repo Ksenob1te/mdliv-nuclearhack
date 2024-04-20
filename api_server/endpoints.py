@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 def send_to_neuro(url: str, webhook: str, prompt: str, ray_id: str):
     try:
         requests.post(url=url, headers={'Content-Type': 'application/json'},
-                           data=json.dumps({"prompt": prompt, "ray_id": ray_id, "webhook": webhook}))
+                           data=json.dumps({"content": prompt, "ray_id": ray_id, "webhook": webhook}))
     except:
         logger.error("Unable to send request to "+url)
 
