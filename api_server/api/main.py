@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from database.db import get_async_session
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from typing import Any
 import database.crud as crud
 
 router = APIRouter()
@@ -16,8 +16,16 @@ class SendRequest(BaseModel):
 class SendResponse(BaseModel):
     ray_id: str
 
-class NeuroAnswer(BaseModel):
+
+class NeuroChoice(BaseModel):
     pass
+class NeuroAnswer(BaseModel):
+    id: str
+    object: str
+    created: int
+    model: str
+    choices: list[NeuroChoice]
+    usage: Any
 
 
 @router.post("/send")
