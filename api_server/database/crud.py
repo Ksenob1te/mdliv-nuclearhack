@@ -49,3 +49,10 @@ async def get_metro_station_by_id(session: AsyncSession, id: int) -> MetroStatio
     stmt = select(MetroStation).where(MetroStation.id == id)
     res = await session.scalar(stmt)
     return res
+
+
+async def create_flow_record(session: AsyncSession, station_id: int, timestamp: datetime, count: int) -> FlowData:
+    station = FlowData(metro_station_id=station_id, timestamp=timestamp, count=count)
+    session.add_all([station])
+    await session.commit()
+    return station
