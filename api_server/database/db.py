@@ -14,7 +14,7 @@ connect_string = ""
 if DB_TYPE == "mysql":
     connect_string = f"mysql+pymysql://{DB_USER_LOGIN}:{DB_USER_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 else:
-    connect_string = f"sqlite+aiosqlite:///./{DB_NAME}2.db"
+    connect_string = f"sqlite+aiosqlite:///./{DB_NAME}.db"
 
 
 engine = create_async_engine(connect_string, echo=True, connect_args={
