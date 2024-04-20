@@ -1,7 +1,6 @@
 from sqlalchemy import (JSON, ForeignKey, String, TypeDecorator,
                         func, types)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from datetime import datetime
 
 
 class Base(DeclarativeBase):

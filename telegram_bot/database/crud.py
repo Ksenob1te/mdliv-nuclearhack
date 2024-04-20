@@ -13,4 +13,4 @@ async def create_ray_tracker(session: AsyncSession, chat_id: int, ray_id: str) -
     new_instance = RayTracker()
     new_instance.ray_id = ray_id
     new_instance.chat_id = chat_id
-    session.add(new_instance)
+    session.add_all([new_instance])
