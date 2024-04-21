@@ -117,8 +117,10 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
                 if fr is not None:
                     traffic = fr.count
             msg = f"There were {traffic} people at {i['station_name']} station on {i['datetime'].strftime('%d.%m.%y')}"
-            name = j.line.name
-            msg += f" on {name} line"
+            line = await crud.get_metro_line_by_id(j.line_id)
+            if line is not None:
+                name = line.name
+                msg += f" on {name} line"
             formated_stations.append("("+ msg +")")
     print("[" + ", ".join(formated_stations) + "]")
 
