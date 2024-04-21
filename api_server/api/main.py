@@ -37,9 +37,7 @@ class NeuroAnswer(BaseModel):
     result: str
 
 
-BASE_PROMPT_PREPROCESSOR = "Answer the following question in json format by highlighting the station name in the station key, and the date specified in the message in the date key, converting the date to the time format like YYYY-MM-DD. Название станции в именительном падеже"
 BASE_PROMPT_PROCESSOR = ""
-SYSTEM_PREPROCESSOR = "Today is April 3, 2024. You print only json."
 SYSTEM_PROCESSOR = "Today is April 3, 2024. В день {}, было {} людей на станции {} station. Answer only in Russian. Отвечай на русском."
 
 
@@ -53,9 +51,9 @@ async def send(req: SendRequest, background_tasks: BackgroundTasks,
 
     await session.commit()
     background_tasks.add_task(
-        endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/process",
+        endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/preprocess",
         f"http://{PUBLIC_SERVER_URL}/api/neuro/hook/preprocess",
-        BASE_PROMPT_PREPROCESSOR + "\n" + req.text, neuro_ray_id, SYSTEM_PREPROCESSOR
+        req.text, neuro_ray_id, ""
     )
     return SendResponse(ray_id=user_ray_id)
 
@@ -69,6 +67,8 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
     if log_inst.response is not None:
         raise HTTPException(400)
 
+    print(req.result)
+    
     try:
         data = json.loads(req.result.strip())
         date = datetime.fromisoformat(data["date"])
@@ -84,22 +84,22 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
         )
         return JSONResponse({"msg": "ok"})
     
-    st = await crud.get_station_by_name(session, station)
+    # st = await crud.get_station_by_name(session, station)
     
-    if st is None:
-        print("Dont have station data")
-        background_tasks.add_task(
-            endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз", log_inst.user_ray_id
-        )
-        return JSONResponse({"msg": "ok"})
+    # if st is None:
+    #     print("Dont have station data")
+    #     background_tasks.add_task(
+    #         endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз", log_inst.user_ray_id
+    #     )
+    #     return JSONResponse({"msg": "ok"})
     
-    fr = await crud.get_flow_record(session, st.id, datetime.fromisoformat(data["date"]))
-    if fr is None:
-        print("Dont have time data")
-        background_tasks.add_task(
-            endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз", log_inst.user_ray_id
-        )
-        return JSONResponse({"msg": "ok"})
+    # fr = await crud.get_flow_record(session, st.id, datetime.fromisoformat(data["date"]))
+    # if fr is None:
+    #     print("Dont have time data")
+    #     background_tasks.add_task(
+    #         endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз", log_inst.user_ray_id
+    #     )
+    #     return JSONResponse({"msg": "ok"})
     prompt = BASE_PROMPT_PROCESSOR
     
     date = "{} days {} months {}".format(date.day, date.month, date.year)
