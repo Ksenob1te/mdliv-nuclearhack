@@ -21,6 +21,13 @@ llm = Llama(
     n_threads=10
 )
 
+llm2 = Llama(
+    model_path="codellama-7b-instruct.Q4_K_S.gguf",
+    use_mlock=True,
+    n_ctx=4096,
+    n_threads=10
+)
+
 
 prompt_category = \
     """
@@ -93,7 +100,7 @@ async def preprocess_prompt(req: NeuroRequest):
 
 async def process_prompt(req: NeuroRequest):
     print("Starting processing")
-    llm_response = llm.create_chat_completion(
+    llm_response = llm2.create_chat_completion(
         messages=[
             {"role": "system",
                 "content": req.system},
