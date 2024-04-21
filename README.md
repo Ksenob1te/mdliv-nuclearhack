@@ -45,7 +45,7 @@
 
 
 ## Схема сервиса
-![image](https://github.com/Ksenob1te/mdliv-nuclearhack/assets/54020145/8540d093-6628-46e1-a1b0-d8a5a7e9e86d)
+![image](![Схема](https://github.com/Ksenob1te/mdliv-nuclearhack/assets/63819958/a5f3a76c-b7c9-4227-aa7d-0e2b79d477a2))
 
 ## LLM модель
 Использовали **code Llama 7b instruct**  
