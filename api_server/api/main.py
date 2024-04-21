@@ -87,7 +87,7 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
             stations.append(
                 {
                     "station_name": i["station_name"],
-                    "datetime": datetime.fromisoformat(i["datetime"]).str,
+                    "datetime": datetime.fromisoformat(i["datetime"]),
                     "line_number": i["line_number"],
                     "line_name": i["line_name"]
                 }
@@ -124,7 +124,7 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
     formated_stations = []
     for i in stations:
         formated_stations.append(
-            "("+(", ".join([i["station_name"], "1234", i["datetime"].strftime("DD.MM.YYYY")]))+")")
+            "("+(", ".join([i["station_name"], "1234", i["datetime"].strftime("%d.%m.%y")]))+")")
     print("[" + ", ".join(formated_stations) + "]")
     prompt = BASE_PROMPT_PROCESSOR.format(
         "[" + ", ".join(formated_stations) + "]")
