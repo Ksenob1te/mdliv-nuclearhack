@@ -78,6 +78,7 @@ class Result(BaseModel):
 async def preprocess_prompt(req: NeuroRequest):
     print("Starting processing")
     llm_response = llm.create_chat_completion(
+        max_tokens=250,
         messages=[
             {"role": "system",
                 "content": prompt_category},
