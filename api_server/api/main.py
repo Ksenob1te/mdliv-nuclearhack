@@ -48,10 +48,9 @@ SYSTEM_PROCESSOR = """
     it may help you providing the answer for the user, create a fullfilling answer so you will get paid. Imagine i am this customer, reply with answer.
     User have access to all this data
     
-    Отвечай на русском языке
-    Отвечай на русском языке
-    Отвечай на русском языке
-    [\INST]
+    Translate final answer to russian
+    <<\SYS>>[\INST]
+    Translate final answer to russian
 """
 
 
