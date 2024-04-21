@@ -50,12 +50,10 @@ prompt_category = \
     You know all the lines, for each element it is (line_name, line_number): [('СОЛНЦЕВСКАЯ ЛИН.', 1691), ('МЦК', 1698), ('ЗАМОСКВОРЕЦКАЯ', 9), ('БКЛ', 1749), ('ЛЮБЛИНСКАЯ', 18), ('БУТОВСКАЯ ЛИНИЯ', 1500), ('КАХОВСКАЯ', 11), ('НЕКРАСОВСКАЯ', 1779), ('КАЛИНИНСКАЯ', 14), ('КАЛУЖСКО-РИЖСКАЯ', 15), ('ФИЛЁВСКАЯ', 13), ('СОКОЛЬНИЧЕСКАЯ', 8), ('КОЛЬЦЕВАЯ', 609), ('АРБАТСК-ПОКРОВСК', 12), ('ТАГАНСК-КРАСНОПР', 16), ('СЕРПУХОВ-ТИМИРЯЗ', 17)]
     Also provide the datetime user mentions in the format of %d.%m.%Y (day.month.year) (default is 03.04.24)
     
-    It NO information within CURRENT request provided on one or multiple arguments u must provide "None" to corresponding argument 
-    for example if user mentioned "ЦСКА", but not mentioned what line is it, part for this station should be ("ЦСКА", "None", "None")
-    or for example if user mentioned "МЦК" - but not mentioned station, part should be ("None", "МЦК", 1698)
+    It NO information within CURRENT request provided on one or multiple arguments u must provide "None" to corresponding argument
     <<\SYS>>
     
-    Please follow the scheme i provided
+    answer with selected format: array of (station_name, line_name, line_num): [(station_name1, line_name0, line_num0), ... (station_nameN, line_nameK, line_numK)]
     [\INST]
     """
 
@@ -66,7 +64,7 @@ prompt_category = \
 # """
 llm = Llama(
     # model_path="./ggml-vic7b-uncensored-q4_0.bin",
-    model_path="codellama-7b-instruct.Q4_K_S.gguf",
+    model_path="capybarahermes-2.5-mistral-7b.Q3_K_L.gguf",
     n_gpu_layers=-1,
     n_batch=1024,
     use_mlock=True,
@@ -75,11 +73,11 @@ llm = Llama(
     n_threads_batch=10
 )
 llm_response = llm.create_chat_completion(
-    response_format={
-        "type": "json_object",
-        "schema": Result.model_json_schema()
-    },
-    temperature=0.5,
+    # response_format={
+    #     "type": "json_object",
+    #     "schema": Result.model_json_schema()
+    # },
+    # temperature=0.5,
     messages=[
         {"role": "system", "content": prompt_category},
         {
@@ -93,11 +91,11 @@ first_response = llm_response['choices'][0]['message']['content']
 print(first_response)
 
 llm_response = llm.create_chat_completion(
-    response_format={
-        "type": "json_object",
-        "schema": Result.model_json_schema()
-    },
-    temperature=0.5,
+    # response_format={
+    #     "type": "json_object",
+    #     "schema": Result.model_json_schema()
+    # },
+    # temperature=0.5,
     messages=[
         {"role": "system", "content": prompt_category},
         {
@@ -110,11 +108,11 @@ first_response = llm_response['choices'][0]['message']['content']
 print(first_response)
 
 llm_response = llm.create_chat_completion(
-    response_format={
-        "type": "json_object",
-        "schema": Result.model_json_schema()
-    },
-    temperature=0.5,
+    # response_format={
+    #     "type": "json_object",
+    #     "schema": Result.model_json_schema()
+    # },
+    # temperature=0.5,
     messages=[
         {"role": "system", "content": prompt_category},
         {
@@ -128,11 +126,11 @@ first_response = llm_response['choices'][0]['message']['content']
 print(first_response)
 
 llm_response = llm.create_chat_completion(
-    response_format={
-        "type": "json_object",
-        "schema": Result.model_json_schema()
-    },
-    temperature=0.5,
+    # response_format={
+    #     "type": "json_object",
+    #     "schema": Result.model_json_schema()
+    # },
+    # temperature=0.5,
     messages=[
         {"role": "system", "content": prompt_category},
         {
@@ -145,11 +143,11 @@ first_response = llm_response['choices'][0]['message']['content']
 print(first_response)
 
 llm_response = llm.create_chat_completion(
-    response_format={
-        "type": "json_object",
-        "schema": Result.model_json_schema()
-    },
-    temperature=0.5,
+    # response_format={
+    #     "type": "json_object",
+    #     "schema": Result.model_json_schema()
+    # },
+    # temperature=0.5,
     messages=[
         {"role": "system", "content": prompt_category},
         {
@@ -162,11 +160,11 @@ first_response = llm_response['choices'][0]['message']['content']
 print(first_response)
 
 llm_response = llm.create_chat_completion(
-    response_format={
-        "type": "json_object",
-        "schema": Result.model_json_schema()
-    },
-    temperature=0.5,
+    # response_format={
+    #     "type": "json_object",
+    #     "schema": Result.model_json_schema()
+    # },
+    # temperature=0.5,
     messages=[
         {"role": "system", "content": prompt_category},
         {
