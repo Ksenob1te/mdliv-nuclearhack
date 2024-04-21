@@ -37,15 +37,18 @@ class NeuroAnswer(BaseModel):
     result: str
 
 
-BASE_PROMPT_PROCESSOR = "Отвечай на русском."
+BASE_PROMPT_PROCESSOR = ""
 SYSTEM_PROCESSOR = """
     [INST]<<SYS>>
-    Today is 03.04.24
+    Today is April 3rd, 2024
     you MUST only consider the information from this request
     You're a technical support, users is asking you: {}
     
     You know, some information that can help you answer his question is format [(station_name, passenger_traffic, date), ...]: {}
     it may help you providing the answer for the user, create a fullfilling answer so you will get paid. Imagine i am this customer, reply with answer.
+    User have access to all this data
+    
+    Translate the final answer into Russian
     [\INST]
 """
 
@@ -110,13 +113,12 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
 
         if st is not None:
 
-            fr = await crud.get_flow_record(session, st.id, datetime.fromisoformat(data["date"]))
+            fr = await crud.get_flow_record(session, st.id, i["datetime"])
             if fr is not None:
                 traffic = fr.count
-                
-        formated_stations.append("("+(", ".join([i["station_name"], str(traffic), i["datetime"].strftime("%d.%m.%y")]))+")")
+        msg = f"There were {traffic} people at {i['station_name']} station on {i['datetime'].strftime('%d.%m.%y')}"
+        formated_stations.append("("+ msg +")")
     print("[" + ", ".join(formated_stations) + "]")
-    prompt = ""
 
     date = "{} days {} months {}".format(date.day, date.month, date.year)
     system_prompt = SYSTEM_PROCESSOR.format(log_inst.request,
@@ -124,7 +126,7 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
 
     background_tasks.add_task(
         endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/process", f"http://{PUBLIC_SERVER_URL}/api/neuro/hook/process",
-        prompt, log_inst.neuro_ray_id, system_prompt
+        BASE_PROMPT_PROCESSOR, log_inst.neuro_ray_id, system_prompt
     )
     return JSONResponse({"msg": "ok"})
 
