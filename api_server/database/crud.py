@@ -56,13 +56,10 @@ async def create_flow_record(session: AsyncSession, station_id: int, timestamp: 
 async def get_flow_record(session: AsyncSession, station_id: int, timestamp: datetime) -> FlowData:
     stmt = select(FlowData).where(FlowData.metro_station_id == station_id).where(FlowData.timestamp == timestamp).limit(1)
     res = await session.scalar(stmt)
-    print(timestamp)
-    print(res.timestamp)
     return res
 
 
 async def get_station_by_name(session: AsyncSession, name: str) -> MetroStation:
     stmt = select(MetroStation).where(MetroStation.name == name.capitalize()).limit(1)
-    print(stmt)
     res = await session.scalar(stmt)
     return res
