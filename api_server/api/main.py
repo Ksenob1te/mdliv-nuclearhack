@@ -116,11 +116,10 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
                 
         formated_stations.append("("+(", ".join([i["station_name"], str(traffic), i["datetime"].strftime("%d.%m.%y")]))+")")
     print("[" + ", ".join(formated_stations) + "]")
-    prompt = BASE_PROMPT_PROCESSOR.format(log_inst.request,
-        "[" + ", ".join(formated_stations) + "]")
+    prompt = ""
 
     date = "{} days {} months {}".format(date.day, date.month, date.year)
-    system_prompt = SYSTEM_PROCESSOR.format(
+    system_prompt = SYSTEM_PROCESSOR.format(log_inst.request,
         "[" + ", ".join(formated_stations) + "]")
 
     background_tasks.add_task(
