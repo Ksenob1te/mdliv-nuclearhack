@@ -112,8 +112,8 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
         traffic = 0
         st = await crud.get_station_by_name(session, i["station_name"])
         for i in st:
-            if st is not None:
-                fr = await crud.get_flow_record(session, st.id, i["datetime"])
+            if i is not None:
+                fr = await crud.get_flow_record(session, i.id, i["datetime"])
                 if fr is not None:
                     traffic = fr.count
             msg = f"There were {traffic} people at {i['station_name']} station on {i['datetime'].strftime('%d.%m.%y')}"
