@@ -41,11 +41,11 @@ BASE_PROMPT_PROCESSOR = "Отвечай на русском."
 SYSTEM_PROCESSOR = """
     [INST]<<SYS>>
     Today is 03.04.24
-    You MUST NOT reply the user message
-    you MUST only consider the information from this request 
+    you MUST only consider the information from this request
+    You're a technical support, users is asking you: {}
     
-    You know this in format (station name, passenger traffic, date): {}
-    Also provide the datetime user mentions in the format of %dd.%mm.%YY (day.month.year) (default is 03.04.24)
+    You know, some information that can help you answer his question is format [(station_name, passenger_traffic, date), ...]: {}
+    it may help you providing the answer for the user, create a fullfilling answer so you will get paid. Imagine i am this customer, reply with answer.
     [\INST]
 """
 
