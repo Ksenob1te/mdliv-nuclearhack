@@ -164,5 +164,4 @@ cython_debug/
 log.txt
 
 *.db
-!flow.db
 *.gguf
