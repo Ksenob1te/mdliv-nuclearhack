@@ -111,14 +111,14 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
     for i in stations:
         traffic = 0
         st = await crud.get_station_by_name(session, i["station_name"])
-
-        if st is not None:
-
-            fr = await crud.get_flow_record(session, st.id, i["datetime"])
-            if fr is not None:
-                traffic = fr.count
-        msg = f"There were {traffic} people at {i['station_name']} station on {i['datetime'].strftime('%d.%m.%y')}"
-        formated_stations.append("("+ msg +")")
+        for i in st:
+            if st is not None:
+                fr = await crud.get_flow_record(session, st.id, i["datetime"])
+                if fr is not None:
+                    traffic = fr.count
+            msg = f"There were {traffic} people at {i['station_name']} station on {i['datetime'].strftime('%d.%m.%y')}"
+            msg += f" on {i.line.name} line"
+            formated_stations.append("("+ msg +")")
     print("[" + ", ".join(formated_stations) + "]")
 
     date = "{} days {} months {}".format(date.day, date.month, date.year)
