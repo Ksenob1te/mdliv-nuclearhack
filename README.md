@@ -24,7 +24,7 @@
 
 
 ## Сервер нейросети
-! You need to specify network model before trying to startup the project. It should be in the `./mct_llm/` dir, and (yeah, fun) it should be named `codellama-7b-instruct.Q4_K_S.gguf`
+! You need to specify network model before trying to startup the project. It should be in the project root dir, and (yeah, fun) it should be named `codellama-7b-instruct.Q4_K_S.gguf`
 
 * Осуществляет взаимодействие с предобученной моделью нейросети (в нашем примере используется небольшая модель для демонстрации, ведь наши возможности серверных вычислений значительно ограничены)
 ### Запуск сервера
