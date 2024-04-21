@@ -37,15 +37,20 @@ class NeuroAnswer(BaseModel):
     result: str
 
 
-BASE_PROMPT_PROCESSOR = "Отвечай на русском."
+BASE_PROMPT_PROCESSOR = ""
 SYSTEM_PROCESSOR = """
     [INST]<<SYS>>
-    Today is 03.04.24
+    Today is April 3rd, 2024
     you MUST only consider the information from this request
     You're a technical support, users is asking you: {}
     
     You know, some information that can help you answer his question is format [(station_name, passenger_traffic, date), ...]: {}
     it may help you providing the answer for the user, create a fullfilling answer so you will get paid. Imagine i am this customer, reply with answer.
+    User have access to all this data
+    
+    Отвечай на русском языке
+    Отвечай на русском языке
+    Отвечай на русском языке
     [\INST]
 """
 
@@ -76,9 +81,6 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
     if log_inst.response is not None:
         raise HTTPException(400)
 
-    print(req.result)
-    print(type(req.result))
-
     stations = []
 
     try:
@@ -104,39 +106,29 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
         return JSONResponse({"msg": "ok"})
 
     date = stations[0]["datetime"]
-    # st = await crud.get_station_by_name(session, station)
 
-    # if st is None:
-    #     print("Dont have station data")
-    #     background_tasks.add_task(
-    #         endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз", log_inst.user_ray_id
-    #     )
-    #     return JSONResponse({"msg": "ok"})
-
-    # fr = await crud.get_flow_record(session, st.id, datetime.fromisoformat(data["date"]))
-    # if fr is None:
-    #     print("Dont have time data")
-    #     background_tasks.add_task(
-    #         endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз", log_inst.user_ray_id
-    #     )
-    #     return JSONResponse({"msg": "ok"})
 
     formated_stations = []
     for i in stations:
-        formated_stations.append(
-            "("+(", ".join([i["station_name"], "1234", i["datetime"].strftime("%d.%m.%y")]))+")")
+        traffic = 0
+        st = await crud.get_station_by_name(session, i["station_name"])
+
+        if st is not None:
+
+            fr = await crud.get_flow_record(session, st.id, i["datetime"])
+            if fr is not None:
+                traffic = fr.count
+        msg = f"There were {traffic} people at {i['station_name']} station on {i['datetime'].strftime('%d.%m.%y')}"
+        formated_stations.append("("+ msg +")")
     print("[" + ", ".join(formated_stations) + "]")
-    prompt = BASE_PROMPT_PROCESSOR.format(
-        "[" + ", ".join(formated_stations) + "]")
 
     date = "{} days {} months {}".format(date.day, date.month, date.year)
-    system_prompt = SYSTEM_PROCESSOR.format(
+    system_prompt = SYSTEM_PROCESSOR.format(log_inst.request,
         "[" + ", ".join(formated_stations) + "]")
-    prompt = prompt + "\n" + req.result
 
     background_tasks.add_task(
         endpoints.send_to_neuro, f"http://{PUBLIC_NEURO_URL}/process", f"http://{PUBLIC_SERVER_URL}/api/neuro/hook/process",
-        prompt, log_inst.neuro_ray_id, system_prompt
+        BASE_PROMPT_PROCESSOR, log_inst.neuro_ray_id, system_prompt
     )
     return JSONResponse({"msg": "ok"})
 
