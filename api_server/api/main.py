@@ -104,27 +104,20 @@ async def neuro_hook_preprocess(req: NeuroAnswer, background_tasks: BackgroundTa
         return JSONResponse({"msg": "ok"})
 
     date = stations[0]["datetime"]
-    # st = await crud.get_station_by_name(session, station)
 
-    # if st is None:
-    #     print("Dont have station data")
-    #     background_tasks.add_task(
-    #         endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз", log_inst.user_ray_id
-    #     )
-    #     return JSONResponse({"msg": "ok"})
-
-    # fr = await crud.get_flow_record(session, st.id, datetime.fromisoformat(data["date"]))
-    # if fr is None:
-    #     print("Dont have time data")
-    #     background_tasks.add_task(
-    #         endpoints.send_to_telegram, log_inst.webhook, "Внутреняя ошибка сервера. Попробуйте еще раз", log_inst.user_ray_id
-    #     )
-    #     return JSONResponse({"msg": "ok"})
 
     formated_stations = []
     for i in stations:
-        formated_stations.append(
-            "("+(", ".join([i["station_name"], "1234", i["datetime"].strftime("%d.%m.%y")]))+")")
+        traffic = 0
+        st = await crud.get_station_by_name(session, i["station_name"])
+
+        if st is not None:
+
+            fr = await crud.get_flow_record(session, st.id, datetime.fromisoformat(data["date"]))
+            if fr is not None:
+                traffic = fr.count
+                
+        formated_stations.append("("+(", ".join([i["station_name"], str(traffic), i["datetime"].strftime("%d.%m.%y")]))+")")
     print("[" + ", ".join(formated_stations) + "]")
     prompt = BASE_PROMPT_PROCESSOR.format(
         "[" + ", ".join(formated_stations) + "]")
